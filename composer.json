@@ -1,0 +1,23 @@
+{
+    "name": "luoyy/WilddogSms",
+    "description": "Wilddog SMS SDK",
+    "keywords": ["Wilddog", "sms", "SDK", "野狗短信SDK"],
+    "license": "GPL-2.0",
+    "time": "2017-06-07",
+    "authors": [{
+        "name": "zishang520",
+        "email": "zishang520@gmail.com",
+        "git": "https://github.com/zishang520/wilddog_sms",
+        "homepage": "http://www.luoyy.com",
+        "role": "Engineer"
+    }],
+    "require": {
+        "php": ">=5.4.0",
+    },
+    "autoload": {
+        "psr-4": {
+            "luoyy\\WilddogSmsSdk\\": "src/"
+        }
+    },
+    "prefer-stable": true
+}
