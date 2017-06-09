@@ -9,15 +9,17 @@
         "email": "zishang520@gmail.com",
         "git": "https://github.com/zishang520/wilddog_sms",
         "homepage": "http://www.luoyy.com",
-        "role": "Engineer"
     }],
     "require": {
         "php": ">=5.4.0",
+        "ext-openssl": "*",
+        "ext-curl": "*"
     },
     "autoload": {
         "psr-4": {
             "luoyy\\WilddogSmsSdk\\": "src/"
         }
     },
+    "minimum-stability": "dev",
     "prefer-stable": true
 }
