@@ -4,10 +4,10 @@
 
 You need to introduce all the packages
 
-```
+```php
 /**
  * initialization
- * new luoyy\WilddogSmsSdk\WilddogSms(); OR luoyy\WilddogSmsSdk\WilddogSms::init();
+ * new luoyy\WilddogSmsSdk\WilddogSms(); OR luoyy\WilddogSmsSdk\WilddogSms::send() ....
  * If you initialize the parameters, you can ignore the parameters when calling subsequent methods
  */
 $WilddogSms = new luoyy\WilddogSmsSdk\WilddogSms([$mobile null,[$templateId = null,[$params = []]]]);\
@@ -21,6 +21,8 @@ $WilddogSms = new luoyy\WilddogSmsSdk\WilddogSms([$mobile null,[$templateId = nu
  */
 $return = $WilddogSms->sendcode('13800831500','100000', ['123']);
 var_dump($return);
+$return = luoyy\WilddogSmsSdk\WilddogSms::sendcode('13800831500','100000', ['123']);
+var_dump($return);
 
 /**
  * Send a notification text message
@@ -29,6 +31,8 @@ var_dump($return);
  * The specific content to see official website address: <https://docs.wilddog.com/sms/api/send.html>
  */
 $return = $WilddogSms->send(['1380083150','13800138006'],'100000', ['456789']);
+var_dump($return);
+$return = luoyy\WilddogSmsSdk\WilddogSms::send(['1380083150','13800138006'],'100000', ['456789']);
 var_dump($return);
 
 /**
@@ -40,6 +44,8 @@ var_dump($return);
  */
 $return = $WilddogSms->checkCode('566034', '1380083150');
 var_dump($return);
+$return = luoyy\WilddogSmsSdk\WilddogSms::checkCode('566034', '1380083150');
+var_dump($return);
 
 /**
  * Query send status
@@ -49,10 +55,14 @@ var_dump($return);
  */
 $return = $WilddogSms->getStatus('12222**************');
 var_dump($return);
+$return1 = luoyy\WilddogSmsSdk\WilddogSms::getStatus('12222**************');
+var_dump($return);
 
 /**
  * Check the account balance
  */
 $return = $WilddogSms->getBalance();
+var_dump($return);
+$return = luoyy\WilddogSmsSdk\WilddogSms::getBalance();
 var_dump($return);
 ```

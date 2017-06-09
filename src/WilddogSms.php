@@ -23,46 +23,46 @@ class WilddogSms extends WilddogSmsConf
     /**
      * @var 发送验证码短信地址
      */
-    private static $SEND_CODE_URL;
+    private static $SEND_CODE_URL = 'https://api.wilddog.com/sms/v1/%s/code/send';
     /**
      * @var 发送通知类短信地址
      */
-    private static $SEND_NOTIFY_URL;
+    private static $SEND_NOTIFY_URL = 'https://api.wilddog.com/sms/v1/%s/notify/send';
     /**
      * @var 校验验证码地址
      */
-    private static $CHECK_CODE_URL;
+    private static $CHECK_CODE_URL = 'https://api.wilddog.com/sms/v1/%s/code/check';
     /**
      * @var 查询发送状态地址
      */
-    private static $GET_STATUS_URL;
+    private static $GET_STATUS_URL = 'https://api.wilddog.com/sms/v1/%s/status';
     /**
      * @var 查询账户余额地址
      */
-    private static $GET_BALANCE_URL;
+    private static $GET_BALANCE_URL = 'https://api.wilddog.com/sms/v1/%s/getBalance';
 
     /**
      * @var mixed
      */
-    private $mobile = null;
+    private static $mobile = null;
 
     /**
      * @var mixed
      */
-    private $templateId = null;
+    private static $templateId = null;
     /**
      * @var mixed
      */
-    private $params = [];
+    private static $params = [];
 
     /**
      * @var mixed
      */
-    private $request;
+    private static $request;
     /**
      * @var rrid
      */
-    private $rrid;
+    private static $rrid;
     /**
      * [__construct 构建函数]
      * @Author    ZiShang520@gmail.com
@@ -71,31 +71,23 @@ class WilddogSms extends WilddogSmsConf
      */
     public function __construct($mobile = null, $templateId = null, array $params = [])
     {
-        self::$SEND_CODE_URL = sprintf('https://api.wilddog.com/sms/v1/%s/code/send', self::APPID);
-        self::$SEND_NOTIFY_URL = sprintf('https://api.wilddog.com/sms/v1/%s/notify/send', self::APPID);
-        self::$CHECK_CODE_URL = sprintf('https://api.wilddog.com/sms/v1/%s/code/check', self::APPID);
-        self::$GET_STATUS_URL = sprintf('https://api.wilddog.com/sms/v1/%s/status', self::APPID);
-        self::$GET_BALANCE_URL = sprintf('https://api.wilddog.com/sms/v1/%s/getBalance', self::APPID);
-        $this->mobile = $mobile;
-        $this->templateId = $templateId;
-        $this->params = $params;
-        $this->request = new Request(true);
+        self::$mobile = $mobile;
+        self::$templateId = $templateId;
+        self::$params = $params;
     }
     /**
-     * [init 实例化构建函数]
+     * [Request Request]
      * @Author    ZiShang520@gmail.com
-     * @DateTime  2017-06-07T09:55:36+0800
-     * @copyright (c)                      ZiShang520    All Rights Reserved
-     * @return    [type]                   [description]
+     * @DateTime  2017-06-09T10:59:36+0800
+     * @copyright (c)                      ZiShang520 All Rights Reserved
      */
-    public static function init($mobile = null, $templateId = null, array $params = [])
+    private static function Request()
     {
-        if (is_null(self::$init)) {
-            return self::$init = new static($mobile, $templateId, $params);
+        if (is_null(self::$request)) {
+            self::$request = new Request(true);
         }
-        return self::$init;
+        return self::$request;
     }
-
     /**
      * [time 获取毫秒时间戳]
      * @Author    ZiShang520@gmail.com
@@ -103,7 +95,7 @@ class WilddogSms extends WilddogSmsConf
      * @copyright (c)                      ZiShang520    All Rights Reserved
      * @return    [type]                   [description]
      */
-    private function time()
+    private static function time()
     {
         return round(microtime(true) * 1000);
     }
@@ -111,7 +103,7 @@ class WilddogSms extends WilddogSmsConf
     /**
      * @param array $data
      */
-    private function sign_str(array $data)
+    private static function sign_str(array $data)
     {
         // 排序
         ksort($data);
@@ -128,39 +120,39 @@ class WilddogSms extends WilddogSmsConf
      * @param     [type]                   $params     [参数]
      * @return    [type]                               [返回数据]
      */
-    public function sendCode($mobile = null, $templateId = null, array $params = [])
+    public static function sendCode($mobile = null, $templateId = null, array $params = [])
     {
         if (!is_null($mobile)) {
-            $this->mobile = $mobile;
+            self::$mobile = $mobile;
         }
-        if (is_null($this->mobile)) {
+        if (is_null(self::$mobile)) {
             return ['status' => false, 'message' => '手机号不能为空'];
             // throw new Exception("The phone number can not be empty", 1);
         }
         if (!is_null($templateId)) {
-            $this->templateId = $templateId;
+            self::$templateId = $templateId;
         }
-        if (is_null($this->templateId)) {
+        if (is_null(self::$templateId)) {
             return ['status' => false, 'message' => '模板ID不能为空'];
             // throw new Exception("Template ID can not be empty", 1);
         }
-        $data = ['mobile' => $this->mobile, 'templateId' => $this->templateId, 'timestamp' => $this->time()];
+        $data = ['mobile' => self::$mobile, 'templateId' => self::$templateId, 'timestamp' => self::time()];
         // 判断是否需要添加自定义参数
-        if (!empty($this->params) && is_array($this->params)) {
-            $data['params'] = json_encode($this->params);
+        if (!empty(self::$params) && is_array(self::$params)) {
+            $data['params'] = json_encode(self::$params);
         }
         // 判断是否需要添加自定义参数覆盖
         if (!empty($params) && is_array($params)) {
             $data['params'] = json_encode($params);
         }
-        $data['signature'] = $this->sign_str($data);
-        $response = $this->request->post(self::$SEND_CODE_URL, $data);
-        if ($body = $this->request->json_decode($response->body)) {
+        $data['signature'] = self::sign_str($data);
+        $response = self::Request()->post(sprintf(self::$SEND_CODE_URL, self::APPID), $data);
+        if ($body = self::Request()->json_decode($response->body)) {
             if (array_key_exists('errcode', $body)) {
                 return ['status' => false, 'message' => WilddogSmsCodeMap::getError($body['errcode']), 'body' => $response->body, 'request' => $data];
             }
             if (array_key_exists('status', $body) && $body['status'] == 'ok') {
-                $this->rrid = $body['data']['rrid'];
+                self::$rrid = $body['data']['rrid'];
                 return ['status' => true, 'rrid' => $body['data']['rrid'], 'message' => $body['status']];
             }
         }
@@ -178,41 +170,41 @@ class WilddogSms extends WilddogSmsConf
      * @param     array                    $params     [description]
      * @return    [type]                               [description]
      */
-    public function send(array $mobiles = [], $templateId = null, array $params = [])
+    public static function send(array $mobiles = [], $templateId = null, array $params = [])
     {
         if (!empty($mobiles) && is_array($mobiles)) {
-            $this->mobile = $mobiles;
+            self::$mobile = $mobiles;
         }
-        if (empty($this->mobile) || !is_array($this->mobile)) {
+        if (empty(self::$mobile) || !is_array(self::$mobile)) {
             return ['status' => false, 'message' => '手机号不能为空并且必须是一个数组'];
             // throw new Exception("The phone number can not be empty and must be an array", 1);
         }
         if (!is_null($templateId)) {
-            $this->templateId = $templateId;
+            self::$templateId = $templateId;
         }
-        if (is_null($this->templateId)) {
+        if (is_null(self::$templateId)) {
             return ['status' => false, 'message' => '模板ID不能为空'];
             // throw new Exception("Template ID can not be empty", 1);
         }
-        $data = ['mobiles' => json_encode($this->mobile), 'templateId' => $this->templateId, 'timestamp' => $this->time()];
+        $data = ['mobiles' => json_encode(self::$mobile), 'templateId' => self::$templateId, 'timestamp' => self::time()];
         // 判断是否需要添加自定义参数
         if (!empty($params) && is_array($params)) {
-            $this->params = $params;
+            self::$params = $params;
         }
         // 处理不存在
-        if (empty($this->params) || !is_array($this->params)) {
+        if (empty(self::$params) || !is_array(self::$params)) {
             return ['status' => false, 'message' => '自定义参数必须是数组并且不能为空'];
             // throw new Exception("Required String parameter params", 1);
         }
-        $data['params'] = json_encode($this->params);
-        $data['signature'] = $this->sign_str($data);
-        $response = $this->request->post(self::$SEND_NOTIFY_URL, $data);
-        if ($body = $this->request->json_decode($response->body)) {
+        $data['params'] = json_encode(self::$params);
+        $data['signature'] = self::sign_str($data);
+        $response = self::Request()->post(sprintf(self::$SEND_NOTIFY_URL, self::APPID), $data);
+        if ($body = self::Request()->json_decode($response->body)) {
             if (array_key_exists('errcode', $body)) {
                 return ['status' => false, 'message' => WilddogSmsCodeMap::getError($body['errcode']), 'body' => $response->body, 'request' => $data];
             }
             if (array_key_exists('status', $body) && $body['status'] == 'ok') {
-                $this->rrid = $body['data']['rrid'];
+                self::$rrid = $body['data']['rrid'];
                 return ['status' => true, 'rrid' => $body['data']['rrid'], 'message' => $body['status']];
             }
         }
@@ -230,12 +222,12 @@ class WilddogSms extends WilddogSmsConf
      * @param     [type]                   $mobile    [手机号，为空调用初始化的]
      * @return    [type]                              [返回状态]
      */
-    public function checkCode($code = null, $mobile = null)
+    public static function checkCode($code = null, $mobile = null)
     {
         if (!is_null($mobile)) {
-            $this->mobile = $mobile;
+            self::$mobile = $mobile;
         }
-        if (is_null($this->mobile) || !is_string($this->mobile)) {
+        if (is_null(self::$mobile) || !is_string(self::$mobile)) {
             return ['status' => false, 'message' => '手机号码不能为空并且必须是字符串'];
             // throw new Exception("The verification code cannot be empty and must be a string", 1);
         }
@@ -243,10 +235,10 @@ class WilddogSms extends WilddogSmsConf
             return ['status' => false, 'message' => '验证码不能为空'];
             // throw new Exception("The verification code cannot be empty", 1);
         }
-        $data = ['code' => $code, 'mobile' => $this->mobile, 'timestamp' => $this->time()];
-        $data['signature'] = $this->sign_str($data);
-        $response = $this->request->post(self::$CHECK_CODE_URL, $data);
-        if ($body = $this->request->json_decode($response->body)) {
+        $data = ['code' => $code, 'mobile' => self::$mobile, 'timestamp' => self::time()];
+        $data['signature'] = self::sign_str($data);
+        $response = self::Request()->post(sprintf(self::$CHECK_CODE_URL, self::APPID), $data);
+        if ($body = self::Request()->json_decode($response->body)) {
             if (array_key_exists('errcode', $body)) {
                 return ['status' => false, 'message' => WilddogSmsCodeMap::getError($body['errcode']), 'body' => $response->body, 'request' => $data];
             }
@@ -267,19 +259,19 @@ class WilddogSms extends WilddogSmsConf
      * @param     [type]                   $rrid      [rrid，为空使用之前发送后生成的]
      * @return    [type]                              [description]
      */
-    public function getStatus($rrid = null)
+    public static function getStatus($rrid = null)
     {
         if (!is_null($rrid)) {
-            $this->rrid = $rrid;
+            self::$rrid = $rrid;
         }
-        if (is_null($this->rrid)) {
+        if (is_null(self::$rrid)) {
             return ['status' => false, 'message' => 'RRID不能为空'];
             // throw new Exception("RRID can not be empty", 1);
         }
-        $data = ['rrid' => $this->rrid];
-        $data['signature'] = $this->sign_str($data);
-        $response = $this->request->get(self::$GET_STATUS_URL, $data);
-        if ($body = $this->request->json_decode($response->body)) {
+        $data = ['rrid' => self::$rrid];
+        $data['signature'] = self::sign_str($data);
+        $response = self::Request()->get(sprintf(self::$GET_STATUS_URL, self::APPID), $data);
+        if ($body = self::Request()->json_decode($response->body)) {
             if (array_key_exists('status', $body) && $body['status'] == 'ok') {
                 if (!empty($body['data']) && is_array($body['data'])) {
                     // 替换状态字符串
@@ -302,12 +294,12 @@ class WilddogSms extends WilddogSmsConf
      * @copyright (c)                      ZiShang520    All Rights Reserved
      * @return    [type]                   [返回的data就是具体内容]
      */
-    public function getBalance()
+    public static function getBalance()
     {
-        $data = ['timestamp' => $this->time()];
-        $data['signature'] = $this->sign_str($data);
-        $response = $this->request->get(self::$GET_BALANCE_URL, $data);
-        if ($body = $this->request->json_decode($response->body)) {
+        $data = ['timestamp' => self::time()];
+        $data['signature'] = self::sign_str($data);
+        $response = self::Request()->get(sprintf(self::$GET_BALANCE_URL, self::APPID), $data);
+        if ($body = self::Request()->json_decode($response->body)) {
             if (array_key_exists('errcode', $body)) {
                 return ['status' => false, 'message' => WilddogSmsCodeMap::getError($body['errcode']), 'body' => $response->body, 'request' => $data];
             }
