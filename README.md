@@ -8,14 +8,23 @@ You need to introduce all the packages
 /**
  * initialization
  * new luoyy\WilddogSmsSdk\WilddogSms(); OR luoyy\WilddogSmsSdk\WilddogSms::send() ....
+ * $WilddogSms = new luoyy\WilddogSmsSdk\WilddogSms([string $mobile = null,[string $templateId = null,[array $params = []]]]);
  * If you initialize the parameters, you can ignore the parameters when calling subsequent methods
  */
-$WilddogSms = new luoyy\WilddogSmsSdk\WilddogSms([$mobile null,[$templateId = null,[$params = []]]]);\
+$WilddogSms = new luoyy\WilddogSmsSdk\WilddogSms('13800831500','100000',['4545454']);
 
 
 /**
+ * SetConf
+ * $WilddogSms->setConf(string $appid = null, string $sign_key = null)
+ * The specific content to see official website address: <https://you_appid.wilddogio.com/.config/sms>
+ */
+$WilddogSms->setConf($appid = 'you_appid', $sign_key = 'SMS API key')
+luoyy\WilddogSmsSdk\WilddogSms::setConf($appid = 'you_appid', $sign_key = 'SMS API key')
+
+/**
  * Send a verification code message
- * $WilddogSms->sendcode([$mobile = null,[$templateId = null,[$params = []]]]);
+ * $WilddogSms->sendcode([string $mobile = null,[string $templateId = null,[array $params = []]]]);
  * $mobile +> The value of $mobile must be a string, $templateId => The value of $templateId must be predefined, If the variable is the default template ID, you can ignore third parameters. $params => The characters in the template that need to be replaced.
  * The specific content to see official website address: <https://docs.wilddog.com/sms/api/sendcode.html>
  */
@@ -26,7 +35,7 @@ var_dump($return);
 
 /**
  * Send a notification text message
- * $WilddogSms->send([$mobiles = null,[$templateId = null,[$params = []]]]);
+ * $WilddogSms->send([array $mobiles = null,[string $templateId = null,[array $params = []]]]);
  * $mobiles +> The value of $mobile must be a array, $templateId => The value of $templateId must be predefined. $params => The characters in the template that need to be replaced.
  * The specific content to see official website address: <https://docs.wilddog.com/sms/api/send.html>
  */
@@ -37,7 +46,7 @@ var_dump($return);
 
 /**
  * Verification code
- * $WilddogSms->checkCode([$code =  null, [$mobile = null]]);
+ * $WilddogSms->checkCode([string $code =  null, [string $mobile = null]]);
  * $code => The value of the variable $code needs to be detected only when the default template is used, $mobile => The default use of the instantiation of the call, if it is called the notification class SMS need to pass the parameters
  * The verification verification code interface can not verify the interface sent by the custom authentication code template.
  * The specific content to see official website address: <https://docs.wilddog.com/sms/api/checkcode.html>
@@ -49,7 +58,7 @@ var_dump($return);
 
 /**
  * Query send status
- * $WilddogSms->getStatus([$rrid = null]);
+ * $WilddogSms->getStatus([string $rrid = null]);
  * $rrid => When this parameter is not present, the value obtained after the message is sent is used
  * The specific content to see official website address: <https://docs.wilddog.com/sms/api/status.html>
  */
@@ -60,6 +69,7 @@ var_dump($return);
 
 /**
  * Check the account balance
+ * $WilddogSms->getBalance();
  */
 $return = $WilddogSms->getBalance();
 var_dump($return);

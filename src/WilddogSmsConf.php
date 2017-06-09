@@ -14,9 +14,9 @@ class WilddogSmsConf
     /**
      * 野狗短信APPID
      */
-    const APPID = '';
+    protected static $APPID = '';
     /**
      * 你的签名。前往[https://luoyy.wilddogio.com/.config/sms]查看
      */
-    const SIGN_KEY = '';
+    protected static $SIGN_KEY = '';
 }

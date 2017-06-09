@@ -5,6 +5,7 @@ namespace luoyy\WilddogSmsSdk;
 use luoyy\WilddogSmsSdk\Core as Request;
 use luoyy\WilddogSmsSdk\WilddogSmsCodeMap;
 use luoyy\WilddogSmsSdk\WilddogSmsConf;
+use \Exception;
 
 /**
  * 野狗短信Api
@@ -88,6 +89,23 @@ class WilddogSms extends WilddogSmsConf
         }
         return self::$request;
     }
+
+    /**
+     * [setConf 设置配置]
+     * @Author    ZiShang520@gmail.com
+     * @DateTime  2017-06-09T11:17:06+0800
+     * @copyright (c)                      ZiShang520 All           Rights Reserved
+     * @param     [type]                   $appid     [description]
+     * @param     [type]                   $sign_key  [description]
+     */
+    public static function setConf($appid = null, $sign_key = null)
+    {
+        if (empty($appid) && empty($sign_key)) {
+            throw new Exception("Appid and Sign_key can not be empty", 1);
+        }
+        self::$APPID = $appid;
+        self::$SIGN_KEY = $sign_key;
+    }
     /**
      * [time 获取毫秒时间戳]
      * @Author    ZiShang520@gmail.com
@@ -108,7 +126,7 @@ class WilddogSms extends WilddogSmsConf
         // 排序
         ksort($data);
         // 生成签名字符串
-        return hash("sha256", urldecode(vsprintf('%s&%s', [http_build_query($data), self::SIGN_KEY])));
+        return hash("sha256", urldecode(vsprintf('%s&%s', [http_build_query($data), self::$SIGN_KEY])));
     }
     /**
      * [sendCode 发送验证码短信]
@@ -146,7 +164,7 @@ class WilddogSms extends WilddogSmsConf
             $data['params'] = json_encode($params);
         }
         $data['signature'] = self::sign_str($data);
-        $response = self::Request()->post(sprintf(self::$SEND_CODE_URL, self::APPID), $data);
+        $response = self::Request()->post(sprintf(self::$SEND_CODE_URL, self::$APPID), $data);
         if ($body = self::Request()->json_decode($response->body)) {
             if (array_key_exists('errcode', $body)) {
                 return ['status' => false, 'message' => WilddogSmsCodeMap::getError($body['errcode']), 'body' => $response->body, 'request' => $data];
@@ -198,7 +216,7 @@ class WilddogSms extends WilddogSmsConf
         }
         $data['params'] = json_encode(self::$params);
         $data['signature'] = self::sign_str($data);
-        $response = self::Request()->post(sprintf(self::$SEND_NOTIFY_URL, self::APPID), $data);
+        $response = self::Request()->post(sprintf(self::$SEND_NOTIFY_URL, self::$APPID), $data);
         if ($body = self::Request()->json_decode($response->body)) {
             if (array_key_exists('errcode', $body)) {
                 return ['status' => false, 'message' => WilddogSmsCodeMap::getError($body['errcode']), 'body' => $response->body, 'request' => $data];
@@ -237,7 +255,7 @@ class WilddogSms extends WilddogSmsConf
         }
         $data = ['code' => $code, 'mobile' => self::$mobile, 'timestamp' => self::time()];
         $data['signature'] = self::sign_str($data);
-        $response = self::Request()->post(sprintf(self::$CHECK_CODE_URL, self::APPID), $data);
+        $response = self::Request()->post(sprintf(self::$CHECK_CODE_URL, self::$APPID), $data);
         if ($body = self::Request()->json_decode($response->body)) {
             if (array_key_exists('errcode', $body)) {
                 return ['status' => false, 'message' => WilddogSmsCodeMap::getError($body['errcode']), 'body' => $response->body, 'request' => $data];
@@ -270,7 +288,7 @@ class WilddogSms extends WilddogSmsConf
         }
         $data = ['rrid' => self::$rrid];
         $data['signature'] = self::sign_str($data);
-        $response = self::Request()->get(sprintf(self::$GET_STATUS_URL, self::APPID), $data);
+        $response = self::Request()->get(sprintf(self::$GET_STATUS_URL, self::$APPID), $data);
         if ($body = self::Request()->json_decode($response->body)) {
             if (array_key_exists('status', $body) && $body['status'] == 'ok') {
                 if (!empty($body['data']) && is_array($body['data'])) {
@@ -298,7 +316,7 @@ class WilddogSms extends WilddogSmsConf
     {
         $data = ['timestamp' => self::time()];
         $data['signature'] = self::sign_str($data);
-        $response = self::Request()->get(sprintf(self::$GET_BALANCE_URL, self::APPID), $data);
+        $response = self::Request()->get(sprintf(self::$GET_BALANCE_URL, self::$APPID), $data);
         if ($body = self::Request()->json_decode($response->body)) {
             if (array_key_exists('errcode', $body)) {
                 return ['status' => false, 'message' => WilddogSmsCodeMap::getError($body['errcode']), 'body' => $response->body, 'request' => $data];
