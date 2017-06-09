@@ -1,12 +1,12 @@
 # Wilddog SMS SDK (野狗短信SDK)
 
+### installation
+```bash
+composer require luoyy/wilddog-sms
+```
 ### Quick Sample Usage
-
-You need to introduce all the packages
-
 ```php
 /**
- * initialization
  * new luoyy\WilddogSmsSdk\WilddogSms(); OR luoyy\WilddogSmsSdk\WilddogSms::send() ....
  * $WilddogSms = new luoyy\WilddogSmsSdk\WilddogSms([string $mobile = null,[string $templateId = null,[array $params = []]]]);
  * If you initialize the parameters, you can ignore the parameters when calling subsequent methods
