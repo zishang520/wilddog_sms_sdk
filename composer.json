@@ -8,7 +8,7 @@
         "name": "zishang520",
         "email": "zishang520@gmail.com",
         "git": "https://github.com/zishang520/wilddog_sms",
-        "homepage": "http://www.luoyy.com",
+        "homepage": "http://www.luoyy.com"
     }],
     "require": {
         "php": ">=5.4.0",
