@@ -1,8 +1,8 @@
 <?php
 namespace luoyy\WilddogSmsSdk;
 
+use luoyy\WilddogSmsSdk\Access;
 use luoyy\WilddogSmsSdk\JSObject;
-use \StdClass;
 
 /**
  * Request内核
@@ -52,7 +52,7 @@ class Core
      * @param $cookie
      * @return mixed
      */
-    protected function curl($option = [])
+    public function request($option = [])
     {
         $option = array_merge([
             'url' => null,
@@ -63,7 +63,7 @@ class Core
         $header = array_merge($this->header, $option['header']);
         if (strtoupper($option['method']) == 'GET') {
             if (!is_null($option['data']) && $option['data'] != '') {
-                $option['url'] = vsprintf('%s?%s', [$option['url'], is_array($option['data']) ? http_build_query($option['data']) : $option['data']]);
+                $option['url'] = vsprintf('%s%s%s', [$option['url'], (strpos($option['url'], '?') !== false ? '&' : '?'), is_array($option['data']) ? http_build_query($option['data']) : $option['data']]);
             }
         }
         $ch = curl_init(); //初始化curl
@@ -103,7 +103,7 @@ class Core
             curl_setopt($ch, CURLOPT_COOKIEJAR, $this->cookie_file); //存储cookie信息
             curl_setopt($ch, CURLOPT_COOKIEFILE, $this->cookie_file); // use cookie
         }
-        $data = new StdClass(); //初始化空数组
+        $data = new Access(); //初始化空数组
         $data->body = curl_exec($ch);
         $data->header = curl_getinfo($ch);
         $data->http_code = $data->header['http_code'];
@@ -125,9 +125,9 @@ class Core
      * @param $cookie
      * @return mixed
      */
-    public function get($url, $data = null, $header = [])
+    public function get($url, $header = [])
     {
-        return $this->curl(['url' => $url, 'method' => 'GET', 'data' => $data, 'header' => $header]);
+        return $this->request(['url' => $url, 'method' => 'GET', 'header' => $header]);
     }
     /**
      * @param $url
@@ -138,7 +138,7 @@ class Core
      */
     public function post($url, $data = null, $header = [])
     {
-        return $this->curl(['url' => $url, 'method' => 'POST', 'data' => $data, 'header' => $header]);
+        return $this->request(['url' => $url, 'method' => 'POST', 'data' => $data, 'header' => $header]);
     }
     /**
      * @param $str

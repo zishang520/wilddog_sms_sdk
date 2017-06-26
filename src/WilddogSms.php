@@ -65,6 +65,16 @@ class WilddogSms extends WilddogSmsConf
      */
     private static $rrid;
     /**
+     * [$APPID default appid]
+     * @var [type]
+     */
+    private static $APPID = self::APPID;
+    /**
+     * [$APPID default sign_key]
+     * @var [type]
+     */
+    private static $SIGN_KEY = self::SIGN_KEY;
+    /**
      * [__construct 构建函数]
      * @Author    ZiShang520@gmail.com
      * @DateTime  2017-06-07T09:52:25+0800
@@ -288,7 +298,7 @@ class WilddogSms extends WilddogSmsConf
         }
         $data = ['rrid' => self::$rrid];
         $data['signature'] = self::sign_str($data);
-        $response = self::Request()->get(sprintf(self::$GET_STATUS_URL, self::$APPID), $data);
+        $response = self::Request()->request(['url' => sprintf(self::$GET_STATUS_URL, self::$APPID), 'data' => $data]);
         if ($body = self::Request()->json_decode($response->body)) {
             if (array_key_exists('status', $body) && $body['status'] == 'ok') {
                 if (!empty($body['data']) && is_array($body['data'])) {
@@ -316,7 +326,7 @@ class WilddogSms extends WilddogSmsConf
     {
         $data = ['timestamp' => self::time()];
         $data['signature'] = self::sign_str($data);
-        $response = self::Request()->get(sprintf(self::$GET_BALANCE_URL, self::$APPID), $data);
+        $response = self::Request()->request(['url' => sprintf(self::$GET_BALANCE_URL, self::$APPID), 'data' => $data]);
         if ($body = self::Request()->json_decode($response->body)) {
             if (array_key_exists('errcode', $body)) {
                 return ['status' => false, 'message' => WilddogSmsCodeMap::getError($body['errcode']), 'body' => $response->body, 'request' => $data];
