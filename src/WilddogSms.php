@@ -5,7 +5,6 @@ namespace luoyy\WilddogSmsSdk;
 use luoyy\WilddogSmsSdk\Core as Request;
 use luoyy\WilddogSmsSdk\WilddogSmsCodeMap;
 use luoyy\WilddogSmsSdk\WilddogSmsConf;
-use \Exception;
 
 /**
  * 野狗短信Api
@@ -80,11 +79,18 @@ class WilddogSms extends WilddogSmsConf
      * @DateTime  2017-06-07T09:52:25+0800
      * @copyright (c)                      ZiShang520 All Rights Reserved
      */
-    public function __construct($mobile = null, $templateId = null, array $params = [])
+    public function __construct(array $option = [])
     {
-        self::$mobile = $mobile;
-        self::$templateId = $templateId;
-        self::$params = $params;
+        $option = array_merge([
+            'mobile' => null, 'templateId' => null, 'params' => [], 'appid' => null, 'sign_key' => null,
+        ], $option);
+        self::$mobile = $option['mobile'];
+        self::$templateId = $option['templateId'];
+        self::$params = $option['params'];
+        if (!empty($option['appid']) && !empty($option['sign_key'])) {
+            self::$APPID = $option['appid'];
+            self::$SIGN_KEY = $option['sign_key'];
+        }
     }
     /**
      * [Request Request]
@@ -110,11 +116,10 @@ class WilddogSms extends WilddogSmsConf
      */
     public static function setConf($appid = null, $sign_key = null)
     {
-        if (empty($appid) && empty($sign_key)) {
-            throw new Exception("Appid and Sign_key can not be empty", 1);
+        if (!empty($appid) && !empty($sign_key)) {
+            self::$APPID = $appid;
+            self::$SIGN_KEY = $sign_key;
         }
-        self::$APPID = $appid;
-        self::$SIGN_KEY = $sign_key;
     }
     /**
      * [time 获取毫秒时间戳]

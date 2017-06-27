@@ -8,10 +8,15 @@ composer require luoyy/wilddog-sms
 ```php
 /**
  * new luoyy\WilddogSmsSdk\WilddogSms(); OR luoyy\WilddogSmsSdk\WilddogSms::send() ....
- * $WilddogSms = new luoyy\WilddogSmsSdk\WilddogSms([string $mobile = null,[string $templateId = null,[array $params = []]]]);
+ * $WilddogSms = new luoyy\WilddogSmsSdk\WilddogSms([array $option = ['mobile' => null, 'templateId' => null, 'params' => [], 'appid' => null, 'sign_key' => null]]);
  * If you initialize the parameters, you can ignore the parameters when calling subsequent methods
  */
-$WilddogSms = new luoyy\WilddogSmsSdk\WilddogSms('13800831500','100000',['4545454']);
+$WilddogSms = new luoyy\WilddogSmsSdk\WilddogSms([
+    'mobile' => '13800831500',
+    'templateId' =>'100000',
+    'params' => ['4545454'],
+    'appid' => 'you_appid',
+    'sign_key' => 'SMS API key']);
 
 
 /**
