@@ -94,7 +94,7 @@ class WilddogSms extends WilddogSmsConf
      */
     private static function Request()
     {
-        if (is_null(self::$request)) {
+        if (!is_object(self::$request)) {
             self::$request = new Request(true);
         }
         return self::$request;
