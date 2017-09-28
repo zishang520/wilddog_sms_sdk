@@ -27,7 +27,7 @@ class Access extends StdClass implements ArrayAccess
             throw new Exception("offset must be a scalar", 1);
         }
         if (property_exists($this, $offset)) {
-            return $this->{$offset};
+            return $this->{strval($offset)};
         }
         return null;
     }
@@ -36,7 +36,7 @@ class Access extends StdClass implements ArrayAccess
         if (!is_scalar($offset)) {
             throw new Exception("offset must be a scalar", 1);
         }
-        $this->{$offset} = $value;
+        $this->{strval($offset)} = $value;
     }
     public function offsetUnset($offset)
     {
@@ -44,7 +44,21 @@ class Access extends StdClass implements ArrayAccess
             throw new Exception("offset must be a scalar", 1);
         }
         if (property_exists($this, $offset)) {
-            unset($this->{$offset});
+            unset($this->{strval($offset)});
         }
+    }
+
+    public function toArray()
+    {
+        $data = [];
+        foreach ($this as $key => $value) {
+            $data[$key] = $value;
+        }
+        return $data;
+    }
+
+    public function toJson()
+    {
+        return json_encode($this->toArray());
     }
 }

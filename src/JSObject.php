@@ -83,14 +83,20 @@ class JSObject
                             break;
                         case '}':
                         case ']':
-                            $stack[0]->add_value($text);
-                            $text = array_shift($stack)->fields;
+                            if (isset($stack[0])) {
+                                $stack[0]->add_value($text);
+                                $text = array_shift($stack)->fields;
+                            }
                             break;
                         case ':':
-                            $stack[0]->add_name($text);
+                            if (isset($stack[0])) {
+                                $stack[0]->add_name($text);
+                            }
                             break;
                         case ',':
-                            $stack[0]->add_value($text);
+                            if (isset($stack[0])) {
+                                $stack[0]->add_value($text);
+                            }
                             break;
                         case '"':
                         case "'":
@@ -98,7 +104,7 @@ class JSObject
                             $state = self::JSVAL_STRING;
                             break;
                         case '/':
-                            assert($i != ($len - 1));
+                            // assert($i != ($len - 1));
                             switch ($json[$i + 1]) {
                                 case '/':
                                     $state = self::JSVAL_COMMT1;
@@ -146,14 +152,19 @@ class JSObject
                         break;
                     }
 
-                    assert($i != ($len - 1));
+                    // assert($i != ($len - 1));
                     if ($json[$i + 1] == '/') {
                         $i++;
                         $state = self::JSVAL_TEXT;
                     }
             }
         }
-        assert($state == self::JSVAL_TEXT);
+        // assert($state == self::JSVAL_TEXT);
         return is_object($text) || is_array($text) ? $text : null;
+    }
+
+    public static function encode($data)
+    {
+        return json_encode($data);
     }
 }
