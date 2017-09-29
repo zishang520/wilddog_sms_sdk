@@ -185,9 +185,9 @@ class WilddogSms extends WilddogSmsConf
                 return ['status' => true, 'rrid' => $body['data']['rrid'], 'message' => $body['status']];
             }
         }
-        if ($response->http_code != 200) {
-            return ['status' => false, 'message' => WilddogSmsCodeMap::getHttpCode($response->http_code), 'body' => $response->body, 'request' => $data];
-        }
+        // if ($response->http_code != 200) {
+        return ['status' => false, 'message' => WilddogSmsCodeMap::getHttpCode($response->http_code), 'body' => $response->body, 'request' => $data];
+        // }
     }
     /**
      * [send 发送通知类短信]
@@ -237,9 +237,9 @@ class WilddogSms extends WilddogSmsConf
                 return ['status' => true, 'rrid' => $body['data']['rrid'], 'message' => $body['status']];
             }
         }
-        if ($response->http_code != 200) {
-            return ['status' => false, 'message' => WilddogSmsCodeMap::getHttpCode($response->http_code), 'body' => $response->body, 'request' => $data];
-        }
+        // if ($response->http_code != 200) {
+        return ['status' => false, 'message' => WilddogSmsCodeMap::getHttpCode($response->http_code), 'body' => $response->body, 'request' => $data];
+        // }
     }
 
     /**
@@ -275,9 +275,9 @@ class WilddogSms extends WilddogSmsConf
                 return ['status' => true, 'message' => $body['status']];
             }
         }
-        if ($response->http_code != 200) {
-            return ['status' => false, 'message' => WilddogSmsCodeMap::getHttpCode($response->http_code), 'body' => $response->body, 'request' => $data];
-        }
+        // if ($response->http_code != 200) {
+        return ['status' => false, 'message' => WilddogSmsCodeMap::getHttpCode($response->http_code), 'body' => $response->body, 'request' => $data];
+        // }
     }
 
     /**
@@ -311,9 +311,9 @@ class WilddogSms extends WilddogSmsConf
                 return ['status' => true, 'message' => $body['status'], 'data' => $body['data']];
             }
         }
-        if ($response->http_code != 200) {
-            return ['status' => false, 'message' => WilddogSmsCodeMap::getHttpCode($response->http_code), 'body' => $response->body, 'request' => $data];
-        }
+        // if ($response->http_code != 200) {
+        return ['status' => false, 'message' => WilddogSmsCodeMap::getHttpCode($response->http_code), 'body' => $response->body, 'request' => $data];
+        // }
     }
 
     /**
@@ -336,8 +336,8 @@ class WilddogSms extends WilddogSmsConf
                 return ['status' => true, 'message' => $body['status'], 'data' => $body['data']];
             }
         }
-        if ($response->http_code != 200) {
-            return ['status' => false, 'message' => WilddogSmsCodeMap::getHttpCode($response->http_code), 'body' => $response->body, 'request' => $data];
-        }
+        // if ($response->http_code != 200) {
+        return ['status' => false, 'message' => WilddogSmsCodeMap::getHttpCode($response->http_code), 'body' => $response->body, 'request' => $data];
+        // }
     }
 }
