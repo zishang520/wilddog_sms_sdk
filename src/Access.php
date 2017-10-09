@@ -50,15 +50,11 @@ class Access extends StdClass implements ArrayAccess
 
     public function toArray()
     {
-        $data = [];
-        foreach ($this as $key => $value) {
-            $data[$key] = $value;
-        }
-        return $data;
+        return json_decode($this->toJson(), true);
     }
 
     public function toJson()
     {
-        return json_encode($this->toArray());
+        return json_encode($this);
     }
 }
